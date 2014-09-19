@@ -118,9 +118,10 @@
     }
 
     // Setup the dnd listeners.
-    var dropZone = document.querySelector("#drop_zone");
+    var dropZone = document.querySelector("#container");
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleFileSelect, false);
+
     window.addEventListener('keyup', handleKeyUp, false);
 </script>
 </html>
