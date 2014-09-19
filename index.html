@@ -26,6 +26,10 @@
             width: 100%;
             height: 100%;
             display: none;
+            border: solid gray 1px;
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 2px 2px 3px #aaaaaa;
         }
     </style>
 </head>
@@ -40,8 +44,78 @@
 <script type="text/javascript">
     var parser = new stmd.DocParser();
     var renderer = new stmd.HtmlRenderer();
-    var result = renderer.render(parser.parse("title \n =========  \n # I not \n * * *"));
-    console.log(result);
-    document.querySelector("#content").innerHTML = result;
+    var pptPages = [];
+    var playIndex = 0;
+
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        // Great success! All the File APIs are supported.
+    } else {
+        alert('The File APIs are not fully supported in this browser.');
+    }
+
+    function handleFileSelect(event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        var files = event.dataTransfer.files;
+        var reader = new FileReader();
+        reader.readAsBinaryString(files[0]);
+
+        reader.onloadend = function (event) {
+            if (event.target.readyState == FileReader.DONE) {
+                renderMarkdownPptPages(event.target.result)
+            }
+        };
+    }
+
+    function handleDragOver(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+    }
+
+    function handleKeyUp(event) {
+        var charCode = (typeof event.which === "number") ? event.which : event.keyCode;
+        if (39 == charCode) {
+            changePages(true)
+        } else if (37 == charCode) {
+            changePages(false)
+        }
+    }
+
+    function renderMarkdownPptPages(content) {
+        playIndex = 0;
+        document.querySelector("#drop_zone").style.display = "none";
+        var pptContent = document.querySelector("#ppt_content");
+        pptContent.style.display = "block";
+        pptPages = renderer.render(parser.parse(content)).split("<hr />");
+        displayPptPage(playIndex)
+    }
+
+    function displayPptPage(index) {
+        document.querySelector("#ppt_content").innerHTML = pptPages[index];
+    }
+
+    function changePages(upped) {
+        if (upped) {
+            playIndex = playIndex + 1
+        } else {
+            playIndex = playIndex - 1
+        }
+        if (playIndex < 0) {
+            playIndex = 0;
+            return
+        } else if (playIndex > pptPages.length - 1) {
+            playIndex = pptPages.length == 0 ? 0 : pptPages.length - 1;
+            return
+        }
+        displayPptPage(playIndex)
+    }
+
+    // Setup the dnd listeners.
+    var dropZone = document.querySelector("#drop_zone");
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+    window.addEventListener('keyup', handleKeyUp, false);
 </script>
 </html>
