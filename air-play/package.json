@@ -1,0 +1,11 @@
+{
+    "name": "ws-node",
+    "version": "0.0.1-SNAPSHOT",
+    "private": true,
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "nodejs-websocket": "1.0.0"
+    }
+}
