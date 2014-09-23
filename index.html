@@ -54,12 +54,14 @@
     var pptPages = [];
     var playIndex = 0;
 
+    // Check file APIs support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         // Great success! All the File APIs are supported.
     } else {
         alert('The File APIs are not fully supported in this browser.');
     }
 
+    // Core control
     function handleFileSelect(event) {
         event.stopPropagation();
         event.preventDefault();
@@ -118,6 +120,8 @@
         }
         displayPptPage(playIndex)
     }
+
+    // Web socket
 
     // Setup the dnd listeners.
     var dropZone = document.querySelector("#container");
