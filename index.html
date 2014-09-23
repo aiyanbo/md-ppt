@@ -95,7 +95,7 @@
         document.querySelector("#drop_zone").style.display = "none";
         var pptContent = document.querySelector("#ppt_content");
         pptContent.style.display = "block";
-        pptPages = renderer.render(parser.parse(content)).split("<hr />");
+        pptPages = renderer.render(parser.parse(content)).split(/<\s*hr\s*\/*\s*>/);
         displayPptPage(playIndex)
     }
 
