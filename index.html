@@ -43,7 +43,9 @@
         Drop markdown file
     </div>
     <div id="ppt_content"></div>
-    <p id="copyright">Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014</p>
+    <p id="copyright">Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.
+        <span id="client_info"></span>
+    </p>
 
     <p>Source: <a href="https://github.com/aiyanbo/md-ppt">https://github.com/aiyanbo/md-ppt</a></p>
 </div>
@@ -53,6 +55,7 @@
     var renderer = new stmd.HtmlRenderer();
     var pptPages = [];
     var playIndex = 0;
+    var interactive = false;
 
     // Check file APIs support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -72,7 +75,10 @@
 
         reader.onloadend = function (event) {
             if (event.target.readyState == FileReader.DONE) {
-                renderMarkdownPptPages(event.target.result)
+                renderMarkdownPptPages(event.target.result);
+                if (interactive) {
+                    sendMarkdown()
+                }
             }
         };
     }
@@ -98,15 +104,16 @@
         var pptContent = document.querySelector("#ppt_content");
         pptContent.style.display = "block";
         pptPages = renderer.render(parser.parse(content)).split(/<\s*hr\s*\/*\s*>/);
-        displayPptPage(playIndex)
+        displayPptPage(playIndex);
     }
 
     function displayPptPage(index) {
+        playIndex = index;
         document.querySelector("#ppt_content").innerHTML = pptPages[index];
     }
 
-    function changePages(upped) {
-        if (upped) {
+    function changePages(next) {
+        if (next) {
             playIndex = playIndex + 1
         } else {
             playIndex = playIndex - 1
@@ -118,10 +125,59 @@
             playIndex = pptPages.length == 0 ? 0 : pptPages.length - 1;
             return
         }
-        displayPptPage(playIndex)
+        displayPptPage(playIndex);
+        if (interactive) {
+            sendControl(playIndex);
+        }
     }
 
     // Web socket
+    var ws = new WebSocket("ws://localhost:8001");
+
+    ws.onopen = function (event) {
+        interactive = true;
+    };
+
+    ws.onmessage = function (event) {
+        var message = JSON.parse(event.data);
+        console.log(message);
+        if ("new" === message.type) {
+            displayClient(message.data);
+        } else if ("send" === message.type) {
+            sendMarkdown();
+        } else if ("show" === message.type) {
+            displayPptPage(message.data)
+        }
+    };
+
+    ws.onerror = function (event) {
+        console.log(event)
+    };
+
+    ws.onclose = function (event) {
+        console.log("Disabled interactive")
+    };
+
+    function displayClient(client) {
+        document.querySelector("#client_info").innerHTML =
+                "Your code: <strong><code>" + client.data + "</code></strong>";
+    }
+
+    function sendMarkdown() {
+        var message = {};
+        message.type = "ppt";
+        message.data = pptPages;
+        console.log("Send ppt");
+        ws.send(JSON.stringify(message));
+    }
+
+    function sendControl(index) {
+        var message = {};
+        message.type = "show";
+        message.data = index;
+        console.log("Send ctrl, show page index: " + index);
+        ws.send(JSON.stringify(message))
+    }
 
     // Setup the dnd listeners.
     var dropZone = document.querySelector("#container");
