@@ -21,6 +21,11 @@ OR
 
 https://github.com/aiyanbo/md-ppt/blob/master/sample/sample.md
 
+## 操作
+
+- 向左剪头 --> 上一页
+- 向右剪头 --> 下一页
+
 ## 多屏互动
 
 Markdown PPT 现已实现多屏互动的原型。使用方式为：
