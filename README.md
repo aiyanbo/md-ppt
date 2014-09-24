@@ -35,13 +35,17 @@ https://github.com/aiyanbo/md-ppt/blob/master/sample/sample.md
 
 ## 多屏互动
 
-Markdown PPT 现已实现多屏互动的原型。使用方式为：
+Markdown PPT 现已实现多屏互动，但暂时需要安装本地服务端。使用方式为：
+
+- 安装并启动 `air-play` 服务端
 
 ```
-cd aiy-play
+cd air-play
 npm install
 node server.js
 ```
+
+－ 在打开的页面中设置服务端信息，默认为：`localhost:8001`
 
 > **Notes**
 > 主控制器(一般是您的移动设备)请最后添加到多屏组里。
