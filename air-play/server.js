@@ -19,7 +19,7 @@ var server = ws.createServer(function (conn) {
                     break;
                 }
             }
-        } else if ("ppt" === message.type || "show" === message.type) {
+        } else if ("ppt" === message.type || "play" === message.type) {
             console.log("conn code: " + conn.code + ", nodes: " + conn.nodes);
             var nodes = conn.nodes;
             server.connections.forEach(function (connection) {

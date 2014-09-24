@@ -145,7 +145,7 @@
             displayClient(message.data);
         } else if ("send" === message.type) {
             sendMarkdown();
-        } else if ("show" === message.type) {
+        } else if ("play" === message.type) {
             displayPptPage(message.data)
         }
     };
@@ -173,7 +173,7 @@
 
     function sendControl(index) {
         var message = {};
-        message.type = "show";
+        message.type = "play";
         message.data = index;
         console.log("Send ctrl, show page index: " + index);
         ws.send(JSON.stringify(message))
