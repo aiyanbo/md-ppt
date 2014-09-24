@@ -23,8 +23,15 @@ https://github.com/aiyanbo/md-ppt/blob/master/sample/sample.md
 
 ## 操作
 
+### PC 端
+
 - 向左剪头 --> 上一页
 - 向右剪头 --> 下一页
+
+### 移动设备
+
+- 向左滑动 --> 下一页
+- 向右滑动 --> 上一页
 
 ## 多屏互动
 
@@ -35,6 +42,9 @@ cd aiy-play
 npm install
 node server.js
 ```
+
+> **Notes**
+> 主控制器(一般是您的移动设备)请最后添加到多屏组里。
 
 ## 使用的组件
 
