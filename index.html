@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Markdown PPT</title>
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
     <style>
         #container {
@@ -18,8 +20,23 @@
             border: dashed gray;
             border-radius: 10px;
             color: gray;
+        }
+
+        #drop_zone_title {
             font-size: 96px;
-            text-align: center;
+        }
+
+        #pin_code {
+            display: none;
+        }
+
+        #pin_code_title {
+            font-size: 74px;
+        }
+
+        #input_pin_code {
+            height: 50px;
+            font-weight: bolder;
         }
 
         #ppt_content {
@@ -39,8 +56,27 @@
 </head>
 <body>
 <div id="container">
-    <div id="drop_zone">
-        Drop markdown file
+    <div id="drop_zone" class="text-center">
+        <div id="drop_zone_title">
+            Drop markdown file
+        </div>
+        <div id="pin_code">
+            <div id="pin_code_title">
+                OR
+            </div>
+            <div id="pin_code_form">
+                <form class="form-inline" role="form" action="" onsubmit="pinConnection();return false">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Connect to pin code</div>
+                            <input id="input_pin_code" class="form-control" type="number"
+                                   min="100000" max="999999" autofocus>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
     <div id="ppt_content"></div>
     <p id="copyright">Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.
@@ -55,6 +91,7 @@
     var renderer = new stmd.HtmlRenderer();
     var pptPages = [];
     var playIndex = 0;
+    var interactCode = 0;
     var interactive = false;
 
     // Check file APIs support.
@@ -99,15 +136,22 @@
     }
 
     function renderMarkdownPptPages(content) {
+        initPptPlayer(renderer.render(parser.parse(content)).split(/<\s*hr\s*\/*\s*>/));
+        displayPptPage(playIndex);
+    }
+
+    function initPptPlayer(ppt) {
         playIndex = 0;
         document.querySelector("#drop_zone").style.display = "none";
         var pptContent = document.querySelector("#ppt_content");
         pptContent.style.display = "block";
-        pptPages = renderer.render(parser.parse(content)).split(/<\s*hr\s*\/*\s*>/);
-        displayPptPage(playIndex);
+        pptPages = ppt;
     }
 
     function displayPptPage(index) {
+        if (pptPages.length == 0) {
+            return
+        }
         playIndex = index;
         document.querySelector("#ppt_content").innerHTML = pptPages[index];
     }
@@ -131,22 +175,35 @@
         }
     }
 
+    function handleSwipeLeft() {
+        changePages(true);
+    }
+
+    function handleSwipeRight() {
+        changePages(false);
+    }
+
     // Web socket
-    var ws = new WebSocket("ws://localhost:8001");
+    var ws = new WebSocket("ws://10.200.182.54:8001");
 
     ws.onopen = function (event) {
         interactive = true;
+        document.querySelector("#pin_code").style.display = "block";
     };
 
     ws.onmessage = function (event) {
         var message = JSON.parse(event.data);
         console.log(message);
         if ("new" === message.type) {
-            displayClient(message.data);
+            interactCode = message.data;
+            displayPinCode(message.data);
         } else if ("send" === message.type) {
             sendMarkdown();
         } else if ("play" === message.type) {
             displayPptPage(message.data)
+        } else if ("ppt" === message.type) {
+            initPptPlayer(message.data);
+            displayPptPage(playIndex);
         }
     };
 
@@ -158,25 +215,36 @@
         console.log("Disabled interactive")
     };
 
-    function displayClient(client) {
+    function displayPinCode(code) {
         document.querySelector("#client_info").innerHTML =
-                "Your code: <strong><code>" + client + "</code></strong>";
+                "Your pin code: <strong><kbd>" + code + "</kbd></strong>";
     }
 
     function sendMarkdown() {
-        var message = {};
-        message.type = "ppt";
-        message.data = pptPages;
         console.log("Send ppt");
-        ws.send(JSON.stringify(message));
+        ws.send(buildMessage("ppt", pptPages));
     }
 
     function sendControl(index) {
-        var message = {};
-        message.type = "play";
-        message.data = index;
         console.log("Send ctrl, show page index: " + index);
-        ws.send(JSON.stringify(message))
+        ws.send(buildMessage("play", index));
+    }
+
+    function pinConnection() {
+        var pinCode = document.querySelector("#input_pin_code").value;
+        if (pinCode == interactCode) {
+            alert("Pin code must be not same your code.");
+            return
+        }
+        console.log("Pin connection to " + pinCode);
+        ws.send(buildMessage("conn", pinCode));
+    }
+
+    function buildMessage(type, data) {
+        var message = {};
+        message.type = type;
+        message.data = data;
+        return JSON.stringify(message)
     }
 
     // Setup the dnd listeners.
@@ -185,5 +253,9 @@
     dropZone.addEventListener('drop', handleFileSelect, false);
 
     window.addEventListener('keyup', handleKeyUp, false);
+
+    $(function () {
+        $("#ppt_content").on("swipeleft", handleSwipeLeft).on("swiperight", handleSwipeRight);
+    });
 </script>
 </html>

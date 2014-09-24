@@ -14,6 +14,9 @@ var server = ws.createServer(function (conn) {
                 if (message.data == connection.code) {
                     connection.nodes.push(code);
                     conn.nodes.push(connection.code);
+                    conn.nodes = conn.nodes.concat(connection.nodes);
+                    // remove self
+                    conn.nodes.splice(conn.nodes.indexOf(code), 1);
                     conn.sendText(buildMessage("conn", "success"));
                     connection.sendText(buildMessage("send", "ppt"));
                     break;
