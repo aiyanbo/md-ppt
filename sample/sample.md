@@ -1,7 +1,6 @@
-Scala & Akka
-============
+<h1 style="margin-top:150px" class="text-center">Scala & Akka</h1>
 
-Speaker: Andy Ai
+<p class="text-center"><strong>Andy Ai</strong></p>
 
 ***************
 
