@@ -12,9 +12,9 @@ var server = ws.createServer(function (conn) {
             for (var index in server.connections) {
                 var connection = server.connections[index];
                 if (message.data == connection.code) {
-                    connection.nodes.push(code);
-                    conn.nodes.push(connection.code);
-                    conn.nodes = conn.nodes.concat(connection.nodes);
+                    safeAdd(connection.nodes, code);
+                    safeAdd(conn.nodes, connection.code);
+                    safeAdd(conn.nodes, connection.nodes);
                     // remove self
                     conn.nodes.splice(conn.nodes.indexOf(code), 1);
                     conn.sendText(buildMessage("conn", "success"));
@@ -51,6 +51,20 @@ function buildMessage(type, object) {
     message.type = type;
     message.data = object;
     return JSON.stringify(message)
+}
+
+function safeAdd(array, eles) {
+    if (typeof eles === "number") {
+        if (array.indexOf(eles) < 0) {
+            array.push(eles);
+        }
+    } else {
+        eles.forEach(function (ele) {
+            if (array.indexOf(ele) < 0) {
+                array.push(ele);
+            }
+        });
+    }
 }
 
 console.log("Server running 8001");

@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>Markdown PPT</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css"/>
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+    <script src="js/jquery.mobile.custom.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
     <style>
         #container {
@@ -23,7 +24,7 @@
         }
 
         #drop_zone_title {
-            font-size: 96px;
+            font-size: 7.5em;
         }
 
         #pin_code {
@@ -31,11 +32,12 @@
         }
 
         #pin_code_title {
-            font-size: 74px;
+            font-size: 5em;
         }
 
         #input_pin_code {
-            height: 50px;
+            width: 13em;
+            height: 4em;
             font-weight: bolder;
         }
 
@@ -43,6 +45,7 @@
             width: 100%;
             height: 100%;
             display: none;
+            font-size: 1.5em;
             border: solid gray 1px;
             border-radius: 10px;
             padding: 5px;
@@ -68,9 +71,9 @@
                 <form class="form-inline" role="form" action="" onsubmit="pinConnection();return false">
                     <div class="form-group">
                         <div class="input-group">
-                            <div class="input-group-addon">Connect to pin code</div>
+                            <!--<div class="input-group-addon">Connect to pin code</div>-->
                             <input id="input_pin_code" class="form-control" type="number"
-                                   min="100000" max="999999" autofocus>
+                                   min="100000" max="999999" placeholder="Connect to pin code" autofocus>
                         </div>
                     </div>
                 </form>
@@ -80,10 +83,12 @@
     </div>
     <div id="ppt_content"></div>
     <p id="copyright">Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.
+        <span id="internet_info" class="btn btn-danger btn-xs">Offline</span>
         <span id="client_info"></span>
     </p>
 
     <p>Source: <a href="https://github.com/aiyanbo/md-ppt">https://github.com/aiyanbo/md-ppt</a></p>
+
 </div>
 </body>
 <script type="text/javascript">
@@ -189,6 +194,9 @@
     ws.onopen = function (event) {
         interactive = true;
         document.querySelector("#pin_code").style.display = "block";
+        var internetInfo = document.querySelector("#internet_info");
+        internetInfo.innerHTML = "Online";
+        internetInfo.className = internetInfo.className.replace("danger", "success");
     };
 
     ws.onmessage = function (event) {
@@ -203,16 +211,26 @@
             displayPptPage(message.data)
         } else if ("ppt" === message.type) {
             initPptPlayer(message.data);
-            displayPptPage(playIndex);
+            if (pptPages.length > 0) {
+                displayPptPage(playIndex);
+            } else {
+                document.querySelector("#ppt_content").innerHTML = "<h1 class='text-center'>Waiting receive ppt.</h1>";
+            }
         }
     };
 
     ws.onerror = function (event) {
-        console.log(event)
+        console.log(event);
+        var internetInfo = document.querySelector("#internet_info");
+        internetInfo.innerHTML = "Offline";
+        internetInfo.className = internetInfo.className.replace("success", "danger");
     };
 
     ws.onclose = function (event) {
-        console.log("Disabled interactive")
+        console.log("Disabled interactive");
+        var internetInfo = document.querySelector("#internet_info");
+        internetInfo.innerHTML = "Offline";
+        internetInfo.className = internetInfo.className.replace("success", "danger");
     };
 
     function displayPinCode(code) {
