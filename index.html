@@ -85,6 +85,10 @@
     <p id="copyright">Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.
         <span id="internet_info" class="btn btn-danger btn-xs">Offline</span>
         <span id="client_info"></span>
+        <span>
+            <input id="air_play_host" placeholder="Enter air-play host" autocomplete>
+            <button class="btn btn-primary btn-xs glyphicon glyphicon-ok" onclick="connectAirPlay(this)"></button>
+        </span>
     </p>
 
     <p>Source: <a href="https://github.com/aiyanbo/md-ppt">https://github.com/aiyanbo/md-ppt</a></p>
@@ -189,49 +193,66 @@
     }
 
     // Web socket
-    var ws = new WebSocket("ws://10.200.182.54:8001");
+    var ws = new WebSocket(localStorage.getItem("air-play") == null ? "ws://localhost:8001" : localStorage.getItem("air-play"));
+    document.querySelector("#air_play_host").value = localStorage.getItem("air-play") == null ? "" : localStorage.getItem("air-play").replace("ws://","");
 
-    ws.onopen = function (event) {
-        interactive = true;
-        document.querySelector("#pin_code").style.display = "block";
-        var internetInfo = document.querySelector("#internet_info");
-        internetInfo.innerHTML = "Online";
-        internetInfo.className = internetInfo.className.replace("danger", "success");
-    };
+    initWS(ws);
 
-    ws.onmessage = function (event) {
-        var message = JSON.parse(event.data);
-        console.log(message);
-        if ("new" === message.type) {
-            interactCode = message.data;
-            displayPinCode(message.data);
-        } else if ("send" === message.type) {
-            sendMarkdown();
-        } else if ("play" === message.type) {
-            displayPptPage(message.data)
-        } else if ("ppt" === message.type) {
-            initPptPlayer(message.data);
-            if (pptPages.length > 0) {
-                displayPptPage(playIndex);
-            } else {
-                document.querySelector("#ppt_content").innerHTML = "<h1 class='text-center'>Waiting receive ppt.</h1>";
+    function initWS(ws) {
+        ws.onopen = function (event) {
+            interactive = true;
+            document.querySelector("#pin_code").style.display = "block";
+            var internetInfo = document.querySelector("#internet_info");
+            internetInfo.innerHTML = "Online";
+            internetInfo.className = internetInfo.className.replace("danger", "success");
+        };
+
+        ws.onmessage = function (event) {
+            var message = JSON.parse(event.data);
+            console.log(message);
+            if ("new" === message.type) {
+                interactCode = message.data;
+                displayPinCode(message.data);
+            } else if ("send" === message.type) {
+                sendMarkdown();
+            } else if ("play" === message.type) {
+                displayPptPage(message.data)
+            } else if ("ppt" === message.type) {
+                initPptPlayer(message.data);
+                if (pptPages.length > 0) {
+                    displayPptPage(playIndex);
+                } else {
+                    document.querySelector("#ppt_content").innerHTML = "<h1 class='text-center'>Waiting receive ppt.</h1>";
+                }
             }
+        };
+
+        ws.onerror = function (event) {
+            console.log(event);
+            var internetInfo = document.querySelector("#internet_info");
+            internetInfo.innerHTML = "Offline";
+            internetInfo.className = internetInfo.className.replace("success", "danger");
+        };
+
+        ws.onclose = function (event) {
+            console.log("Disabled interactive");
+            var internetInfo = document.querySelector("#internet_info");
+            internetInfo.innerHTML = "Offline";
+            internetInfo.className = internetInfo.className.replace("success", "danger");
+        };
+    }
+
+    function connectAirPlay(target) {
+        target.disabled = true;
+        var host = "ws://" + document.querySelector("#air_play_host").value;
+        if (ws.readyState === 1) {
+            ws.close();
         }
-    };
-
-    ws.onerror = function (event) {
-        console.log(event);
-        var internetInfo = document.querySelector("#internet_info");
-        internetInfo.innerHTML = "Offline";
-        internetInfo.className = internetInfo.className.replace("success", "danger");
-    };
-
-    ws.onclose = function (event) {
-        console.log("Disabled interactive");
-        var internetInfo = document.querySelector("#internet_info");
-        internetInfo.innerHTML = "Offline";
-        internetInfo.className = internetInfo.className.replace("success", "danger");
-    };
+        ws = new WebSocket(host);
+        initWS(ws);
+        localStorage.setItem("air-play", host);
+        target.disabled = false;
+    }
 
     function displayPinCode(code) {
         document.querySelector("#client_info").innerHTML =
