@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Markdown PPT Player</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.mobile.custom.min.js"></script>
+    <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
+    <script src="js/player.js"></script>
+    <style>
+        #air-play-input {
+            width: 300px;
+        }
+
+        #main:fullscreen {
+            padding-left: 20px;
+        }
+
+        #main:-webkit-full-screen {
+            padding-left: 20px;
+        }
+
+        #main:-moz-full-screen {
+            padding-left: 20px;
+        }
+
+        #main:-ms-fullscreen {
+            padding-left: 20px;
+        }
+
+        #player {
+            width: 1072px;
+            height: 600px;
+            margin: auto;
+        }
+
+        .panel-dashed {
+            /*border: dashed gray;*/
+            /*border-radius: 10px;*/
+
+            border: solid gray 1px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 3px #aaaaaa;
+        }
+
+        #drop_zone {
+            width: 100%;
+            height: 100%;
+            color: gray;
+        }
+
+        #drop_zone_header {
+            font-size: 7.5em;
+        }
+
+        #play_zone {
+            margin: 0;
+            padding-top: 0;
+            width: 100%;
+            font-size: 1.5em;
+        }
+
+        .footer {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<!-- Static navbar -->
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/player.html">Come Soon</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <div class="navbar-form navbar-left" onsubmit="return false" role="search">
+                <div class="input-group">
+                    <span class="input-group-addon">Air Play</span>
+                    <input id="air-play-input" type="text" class="form-control">
+                    <span class="input-group-addon btn" onclick="">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                    <span class="input-group-addon btn" onclick="window.player.fullScreen('#main')">
+                        <span class="glyphicon glyphicon-fullscreen"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="navbar-form navbar-right" onsubmit="return false" role="status">
+                <div class="btn-group">
+                    <span class="btn btn-info"><strong>^-^</strong></span>
+                    <button type="button" class="btn btn-danger">Offline</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div id="main" class="panel-dashed">
+        <div id="player">
+            <div id="drop_zone" class="text-center">
+                <div id="drop_zone_header">
+                    Drop markdown file
+                </div>
+            </div>
+            <div id="play_zone"></div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="container">
+        <span>Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.</span>
+        <span>Source: <a href="https://github.com/aiyanbo/md-ppt">https://github.com/aiyanbo/md-ppt</a></span>
+    </div>
+</div>
+</body>
+<script>
+    window.player = new Player();
+</script>
+</html>
