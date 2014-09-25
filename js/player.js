@@ -47,6 +47,10 @@ function Player(options) {
         }
     };
 
+    this.setSwipeEvent = function (selector) {
+        $(selector).on("swipeleft", handleSwipeLeft).on("swiperight", handleSwipeRight);
+    };
+
     var __play__ = function (index) {
         dropZone.style.display = "none";
         if (pages.length == 0 || __index__ === index) {
@@ -75,7 +79,6 @@ function Player(options) {
 
     var parseMarkdown = function (markdown) {
         pages = renderer.render(parser.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
-        console.log(pages);
     };
 
     var handleDragOver = function (event) {
@@ -103,14 +106,20 @@ function Player(options) {
 
     var handleKeyUp = function (event) {
         var keyCode = (typeof event.which === "number") ? event.which : event.keyCode;
-        console.log(keyCode);
         if (27 == keyCode) {
             //esc
         } else if (37 == keyCode) {
-            swipePlay(false)
+            swipePlay(false);
         } else if (39 == keyCode) {
-            swipePlay(true)
+            swipePlay(true);
         }
+    };
+
+    var handleSwipeLeft = function () {
+        swipePlay(true);
+    };
+    var handleSwipeRight = function () {
+        swipePlay(false);
     };
 
     player.addEventListener('dragover', handleDragOver, false);
