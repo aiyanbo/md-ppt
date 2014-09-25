@@ -1,4 +1,4 @@
-<h1 style="margin-top:150px" class="text-center">Scala & Akka</h1>
+<h1 style="padding-top:150px" class="text-center">Scala & Akka</h1>
 
 <p class="text-center"><strong>Andy Ai</strong></p>
 
