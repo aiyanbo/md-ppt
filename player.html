@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/player.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="js/jquery.mobile.custom.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
     <script src="js/player.js"></script>
@@ -31,9 +32,6 @@
                     <span class="input-group-addon btn" onclick="">
                         <span class="glyphicon glyphicon-ok"></span>
                     </span>
-                    <span class="input-group-addon btn" onclick="window.player.fullScreen('#main')">
-                        <span class="glyphicon glyphicon-fullscreen"></span>
-                    </span>
                 </div>
             </div>
 
@@ -41,6 +39,11 @@
                 <div class="btn-group">
                     <span class="btn btn-info"><strong>^-^</strong></span>
                     <button type="button" class="btn btn-danger">Offline</button>
+                    <button type="button" class="btn btn-primary" id="btn_full_screen"
+                            onclick="window.player.fullScreen('#main')"
+                            data-toggle="tooltip" data-placement="left" title="Full screen">
+                        <span class="glyphicon glyphicon-fullscreen"></span>
+                    </button>
                 </div>
             </div>
 
@@ -67,6 +70,7 @@
 </div>
 </body>
 <script>
+    $('#btn_full_screen').tooltip();
     window.player = new Player();
     window.player.setSwipeEvent("#main");
 </script>
