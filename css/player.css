@@ -24,6 +24,12 @@
     margin: auto;
 }
 
+#qrcode {
+    width: 250px;
+    height: 250px;
+    margin: 10px auto;
+}
+
 .panel-dashed {
     /*border: dashed gray;*/
     /*border-radius: 10px;*/
