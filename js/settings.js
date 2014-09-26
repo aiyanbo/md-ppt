@@ -4,12 +4,22 @@
 
 function Settings(options) {
     var onok = options.onok;
+    var onws = options.onws;
 
     this.set = function () {
         var parameter = getSearchParameters();
         if (parameter.ws && parameter.code) {
             onok(parameter.ws, parameter.code);
+            return;
         }
+        var ws = localStorage.getItem("ws");
+        if (ws) {
+            onws(ws);
+        }
+    };
+
+    this.save = function (ws) {
+        localStorage.setItem("ws", ws);
     };
 
     var getSearchParameters = function () {
