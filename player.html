@@ -10,6 +10,7 @@
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
     <script src="js/player.js"></script>
     <script src="js/air.play.js"></script>
+    <script src="js/settings.js"></script>
     <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
 </head>
@@ -31,7 +32,7 @@
                 <div class="input-group">
                     <span class="input-group-addon">Air Play</span>
                     <input id="input_host" type="url" class="form-control">
-                    <span class="input-group-addon btn" onclick="">
+                    <span class="input-group-addon btn" onclick="window.airPlay.connect($('#input_host').val())">
                         <span class="glyphicon glyphicon-ok"></span>
                     </span>
                 </div>
@@ -139,7 +140,7 @@
             $("#btn_copy").attr("data-clipboard-text", share);
             $("#img_qrcode").attr("src",
                             "http://api.qrserver.com/v1/create-qr-code/?data="
-                            + encodeURI(window.location.origin + "/mobile.html?" + args));
+                            + encodeURIComponent(window.location.origin + "/mobile.html?" + args));
         },
         onpush: function (event) {
             var message = {};
@@ -158,7 +159,14 @@
             window.player.play(event.data);
         }
     });
-    window.airPlay.connect("ws://10.200.182.54:8001");
+
+    window.settings = new Settings({onok: function (ws, code) {
+        window.airPlay.connect(ws, code);
+        $("#input_host").val(ws);
+        $("#input_code").val(code);
+    }});
+
+    window.settings.set();
 
     var zeroClipboard = new ZeroClipboard(document.querySelector("#btn_copy"));
     zeroClipboard.on("ready", function (readyEvent) {

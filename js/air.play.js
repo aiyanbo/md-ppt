@@ -13,15 +13,18 @@ function AirPlay(options) {
     var airStatus = document.querySelector("#air_status");
     var __url__ = null;
     var webSocket = null;
+    var __this__ = this;
 
-    this.connect = function (url) {
+    this.connect = function (url, code) {
         if (webSocket && webSocket.readyState === 1) {
             webSocket.close();
         }
         webSocket = new WebSocket(url);
         webSocket.onopen = function (event) {
             __url__ = url;
-            console.log("Open connection to " + url);
+            if (code) {
+                __this__.send({"type": "conn", "data": code});
+            }
         };
 
         webSocket.onmessage = function (event) {

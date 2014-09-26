@@ -3,18 +3,22 @@
 }
 
 #main:fullscreen {
+    width: 1172px;
     padding-left: 20px;
 }
 
 #main:-webkit-full-screen {
+    width: 1172px;
     padding-left: 20px;
 }
 
 #main:-moz-full-screen {
+    width: 1172px;
     padding-left: 20px;
 }
 
 #main:-ms-fullscreen {
+    width: 1172px;
     padding-left: 20px;
 }
 
