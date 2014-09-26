@@ -10,12 +10,15 @@
     <script src="js/jquery.mobile.custom.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/air.play.js"></script>
 </head>
 <body>
 
 <div class="btn-group">
-    <span class="btn btn-info"><strong>^-^</strong></span>
-    <button type="button" class="btn btn-danger">Offline</button>
+    <button class="btn btn-info" id="air_code">
+        <strong>^-^</strong>
+    </button>
+    <button class="btn btn-danger" id="air_status">Offline</button>
 </div>
 
 <div id="player">
@@ -24,11 +27,7 @@
             Waiting connect...
         </div>
     </div>
-    <div id="play_zone">
-        <h1 style="padding-top:150px;margin-top:0" class="text-center">Scala &amp; Akka</h1>
-
-        <p class="text-center"><strong>Andy Ai</strong></p>
-    </div>
+    <div id="play_zone"></div>
 </div>
 
 
@@ -39,9 +38,52 @@
 <!--</div>-->
 <!--</div>-->
 </body>
+<!--<script>-->
+<!--window.player = new Player();-->
+<!--window.player.setSwipeEvent(window);-->
+<!--window.player.setMarkdown("Scala & Akka \n ========= \n **Andy Ai** \n ********** \n ## Thank you");-->
+<!--</script>-->
 <script>
-    window.player = new Player();
+    window.player = new Player({
+        onplay: function (event) {
+            window.airPlay.send({"type": "play", "data": event.data});
+        },
+        onreadend: function (event) {
+            var message = {};
+            message.type = "pull";
+            message.data = {
+                "type": "markdown",
+                "data": window.player.getMarkdown(),
+                "index": window.player.getIndex()
+            };
+            window.airPlay.send(message);
+        }
+    });
     window.player.setSwipeEvent(window);
     window.player.setMarkdown("Scala & Akka \n ========= \n **Andy Ai** \n ********** \n ## Thank you");
+
+    window.airPlay = new AirPlay({
+        onopen: function (event) {
+            console.log(event);
+        },
+        onpush: function (event) {
+            var message = {};
+            message.type = "pull";
+            message.data = {
+                "type": "markdown",
+                "data": window.player.getMarkdown(),
+                "index": window.player.getIndex()
+            };
+            window.airPlay.send(message);
+        },
+        onpull: function (event) {
+            window.player.sync(event.data);
+        },
+        onplay: function (event) {
+            window.player.play(event.data);
+        }
+    });
+
+    window.airPlay.connect("ws://10.200.182.54:8001");
 </script>
 </html>
