@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Markdown PPT Mobile Player</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/player.mobile.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.mobile.custom.min.js"></script>
+    <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
+    <script src="js/player.js"></script>
+</head>
+<body>
+
+<div class="btn-group">
+    <span class="btn btn-info"><strong>^-^</strong></span>
+    <button type="button" class="btn btn-danger">Offline</button>
+</div>
+
+<div id="player">
+    <div id="drop_zone">
+        <div id="drop_zone_header">
+            Waiting connect...
+        </div>
+    </div>
+    <div id="play_zone">
+        <h1 style="padding-top:150px;margin-top:0" class="text-center">Scala &amp; Akka</h1>
+
+        <p class="text-center"><strong>Andy Ai</strong></p>
+    </div>
+</div>
+
+
+<!--<div class="footer">-->
+<!--<div class="container">-->
+<!--<span>Copyright: <a href="http://weibo.com/aiyboo">NinetyH</a> &copy; 2014.</span>-->
+<!--<span>Source: <a href="https://github.com/aiyanbo/md-ppt">https://github.com/aiyanbo/md-ppt</a></span>-->
+<!--</div>-->
+<!--</div>-->
+</body>
+<script>
+    window.player = new Player();
+    window.player.setSwipeEvent(window);
+    window.player.setMarkdown("Scala & Akka \n ========= \n **Andy Ai** \n ********** \n ## Thank you");
+</script>
+</html>

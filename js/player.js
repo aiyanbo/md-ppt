@@ -51,6 +51,12 @@ function Player(options) {
         $(selector).on("swipeleft", handleSwipeLeft).on("swiperight", handleSwipeRight);
     };
 
+    this.setMarkdown = function (md) {
+        markdown = md;
+        parseMarkdown(markdown);
+        __play__(0);
+    };
+
     var __play__ = function (index) {
         dropZone.style.display = "none";
         if (pages.length == 0 || __index__ === index) {
@@ -79,6 +85,7 @@ function Player(options) {
 
     var parseMarkdown = function (markdown) {
         pages = renderer.render(parser.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
+        console.log(markdown);
     };
 
     var handleDragOver = function (event) {
