@@ -3,18 +3,18 @@
  */
 
 function AirPlay(options) {
-    this.onopen = options.onopen;
-    this.onclose = options.onclose;
-    this.onerror = options.onerror;
+    var onopen = options.onopen;
 
     var onlineCode = null;
     var airCode = document.querySelector("#air_code");
     var airStatus = document.querySelector("#air_status");
+    var __url__ = null;
     var webSocket = null;
 
     this.connect = function (url) {
         webSocket = new WebSocket(url);
         webSocket.onopen = function (event) {
+            __url__ = url;
             console.log("Open connection to " + url);
         };
 
@@ -35,6 +35,8 @@ function AirPlay(options) {
         switch (event.type) {
             case "new":
                 setOnline(event.data);
+                event.url = __url__;
+                onopen(event);
                 break;
             case "send":
                 break;
@@ -49,15 +51,15 @@ function AirPlay(options) {
 
     var setOnline = function (code) {
         onlineCode = code;
-        airCode.value = code;
-        airStatus.value = "Online";
+        airCode.innerText = code;
+        airStatus.innerText = "Online";
         airStatus.className = airStatus.className.replace("danger", "success");
     };
 
     var setOffline = function () {
         onlineCode = null;
-        airCode.value = "^_^";
-        airStatus.value = "Offline";
+        airCode.innerText = "^_^";
+        airStatus.innerText = "Offline";
         airStatus.className = airStatus.className.replace("success", "danger");
     };
 

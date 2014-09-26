@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/player.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="js/jquery.mobile.custom.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/air.play.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
 </head>
 <body>
 <!-- Static navbar -->
@@ -29,7 +30,7 @@
             <div class="navbar-form navbar-left" onsubmit="return false" role="search">
                 <div class="input-group">
                     <span class="input-group-addon">Air Play</span>
-                    <input id="air-play-input" type="text" class="form-control">
+                    <input id="input_host" type="url" class="form-control">
                     <span class="input-group-addon btn" onclick="">
                         <span class="glyphicon glyphicon-ok"></span>
                     </span>
@@ -38,9 +39,11 @@
 
             <div class="navbar-form navbar-right" onsubmit="return false" role="status">
                 <div class="btn-group">
-                    <span class="btn btn-info" onclick="$('#qrcode_modal').modal()"><strong>^-^</strong></span>
-                    <button type="button" class="btn btn-danger">Offline</button>
-                    <button type="button" class="btn btn-primary" id="btn_full_screen"
+                    <button class="btn btn-info" id="air_code" onclick="$('#qrcode_modal').modal()">
+                        <strong>^-^</strong>
+                    </button>
+                    <button class="btn btn-danger" id="air_status">Offline</button>
+                    <button class="btn btn-primary" id="btn_full_screen"
                             onclick="window.player.fullScreen('#main')"
                             data-toggle="tooltip" data-placement="left" title="Full screen">
                         <span class="glyphicon glyphicon-fullscreen"></span>
@@ -74,15 +77,15 @@
             </div>
             <div class="modal-body">
                 <div class="input-group">
-                    <input id="input_share" readonly type="url" class="form-control"
-                           value="http://10.200.182.54:8080/player.html">
+                    <input id="input_share" readonly type="url" class="form-control">
                     <span class="input-group-addon btn" id="btn_copy"
-                          data-clipboard-text="http://10.200.182.54:8080/player.html">
+                          data-clipboard-text="">
                         <span class="glyphicon glyphicon-camera"></span>
                     </span>
                 </div>
                 <div id="qrcode" class="input-group">
-                    <img src="http://api.qrserver.com/v1/create-qr-code/?data=http%3A%2F%2F10.200.182.54%3A8080%2Fplayer.html">
+                    <img id="img_qrcode"
+                         src="http://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Fgithub.com%2Faiyanbo%2Fmd-ppt">
                 </div>
             </div>
             <div class="modal-footer">
@@ -105,10 +108,24 @@
     window.player = new Player();
     window.player.setSwipeEvent("#main");
 
+    window.airPlay = new AirPlay({
+        onopen: function (event) {
+            var args = "code=" + event.data + "&ws=" + event.url;
+            var share = window.location.origin + "/player.html?" + args;
+            $("#input_share").val(share);
+            $("#input_host").val(event.url);
+            $("#btn_copy").attr("data-clipboard-text", share);
+            $("#img_qrcode").attr("src",
+                            "http://api.qrserver.com/v1/create-qr-code/?data="
+                            + encodeURI(window.location.origin + "/mobile.html?" + args));
+        }
+    });
+    window.airPlay.connect("ws://10.200.182.54:8001");
+
     var zeroClipboard = new ZeroClipboard(document.querySelector("#btn_copy"));
     zeroClipboard.on("ready", function (readyEvent) {
         console.log("ZeroClipboard is on ready.");
-        $("#global-zeroclipboard-html-bridge").tooltip({"placement": "left", "trigger": "hover focus"})
+        $("#global-zeroclipboard-html-bridge").tooltip({"placement": "top", "trigger": "hover focus"})
                 .attr('data-original-title', 'Copy to clipboard');
 
         zeroClipboard.on("beforecopy", function (event) {
