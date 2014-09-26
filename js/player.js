@@ -21,9 +21,8 @@ function Player(options) {
     var markdown = "";
     var pages = [];
     var __index__ = -1;
-    var onfocus = false;
-//    var onerror = options.onerror;
-//    var onwarning = options.onwarning;
+    var onplay = options.onplay;
+    var onreadend = options.onreadend;
     var parser = new stmd.DocParser();
     var renderer = new stmd.HtmlRenderer();
     var player = document.querySelector("#player");
@@ -53,8 +52,24 @@ function Player(options) {
 
     this.setMarkdown = function (md) {
         markdown = md;
+        __index__ = -1;
         parseMarkdown(markdown);
         __play__(0);
+    };
+
+    this.sync = function (event) {
+        markdown = event.data;
+        parseMarkdown(markdown);
+        __index__ = -1;
+        __play__(event.index);
+    };
+
+    this.getMarkdown = function () {
+        return markdown;
+    };
+
+    this.getIndex = function () {
+        return __index__;
     };
 
     var __play__ = function (index) {
@@ -81,11 +96,11 @@ function Player(options) {
             return;
         }
         __play__(index);
+        onplay({"data": index});
     };
 
     var parseMarkdown = function (markdown) {
         pages = renderer.render(parser.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
-        console.log(markdown);
     };
 
     var handleDragOver = function (event) {
@@ -107,6 +122,7 @@ function Player(options) {
                 markdown = event.target.result;
                 parseMarkdown(markdown);
                 __play__(0);
+                onreadend({"data": markdown});
             }
         };
     };

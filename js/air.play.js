@@ -4,6 +4,9 @@
 
 function AirPlay(options) {
     var onopen = options.onopen;
+    var onplay = options.onplay;
+    var onpush = options.onpush;
+    var onpull = options.onpull;
 
     var onlineCode = null;
     var airCode = document.querySelector("#air_code");
@@ -12,6 +15,9 @@ function AirPlay(options) {
     var webSocket = null;
 
     this.connect = function (url) {
+        if (webSocket && webSocket.readyState === 1) {
+            webSocket.close();
+        }
         webSocket = new WebSocket(url);
         webSocket.onopen = function (event) {
             __url__ = url;
@@ -31,6 +37,15 @@ function AirPlay(options) {
         }
     };
 
+    this.join = function (code) {
+        this.send({"type": "conn", "data": code});
+    };
+
+    this.send = function (message) {
+        console.log(message);
+        webSocket.send(JSON.stringify(message));
+    };
+
     var controller = function (event) {
         switch (event.type) {
             case "new":
@@ -38,15 +53,25 @@ function AirPlay(options) {
                 event.url = __url__;
                 onopen(event);
                 break;
-            case "send":
+            case "push":
+                onpush(event);
                 break;
             case "play":
+                onplay(event);
                 break;
-            case "markdown":
+            case "pull":
+                onpull(event);
                 break;
             default :
-                console.warn("Can not handle event: " + event.type)
+                console.log(event);
         }
+    };
+
+    var messaging = function (type, data) {
+        var message = {};
+        message.type = type;
+        message.data = data;
+        return message;
     };
 
     var setOnline = function (code) {

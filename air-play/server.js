@@ -17,12 +17,12 @@ var server = ws.createServer(function (conn) {
                     safeAdd(conn.nodes, connection.nodes);
                     // remove self
                     conn.nodes.splice(conn.nodes.indexOf(code), 1);
-                    conn.sendText(buildMessage("conn", "success"));
-                    connection.sendText(buildMessage("send", "ppt"));
+                    conn.sendText(buildMessage("status", {"action": "conn", "code": 200}));
+                    connection.sendText(buildMessage("push", ""));
                     break;
                 }
             }
-        } else if ("ppt" === message.type || "play" === message.type) {
+        } else if ("pull" === message.type || "play" === message.type) {
             console.log("conn code: " + conn.code + ", nodes: " + conn.nodes);
             var nodes = conn.nodes;
             server.connections.forEach(function (connection) {

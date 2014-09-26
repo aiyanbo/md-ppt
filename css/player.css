@@ -1,4 +1,4 @@
-#air-play-input {
+#input_host {
     width: 250px;
 }
 
@@ -19,7 +19,7 @@
 }
 
 #player {
-    width: 1072px;
+    width: 90%;
     height: 600px;
     margin: auto;
 }

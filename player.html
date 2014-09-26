@@ -35,6 +35,14 @@
                         <span class="glyphicon glyphicon-ok"></span>
                     </span>
                 </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon">Code</span>
+                    <input id="input_code" type="number" min="100000" max="999999" class="form-control">
+                    <span class="input-group-addon btn" onclick="window.airPlay.join($('#input_code').val())">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                </div>
             </div>
 
             <div class="navbar-form navbar-right" onsubmit="return false" role="status">
@@ -105,7 +113,21 @@
 <script>
     $('#btn_full_screen').tooltip();
 
-    window.player = new Player();
+    window.player = new Player({
+        onplay: function (event) {
+            window.airPlay.send({"type": "play", "data": event.data});
+        },
+        onreadend: function (event) {
+            var message = {};
+            message.type = "pull";
+            message.data = {
+                "type": "markdown",
+                "data": window.player.getMarkdown(),
+                "index": window.player.getIndex()
+            };
+            window.airPlay.send(message);
+        }
+    });
     window.player.setSwipeEvent("#main");
 
     window.airPlay = new AirPlay({
@@ -118,6 +140,22 @@
             $("#img_qrcode").attr("src",
                             "http://api.qrserver.com/v1/create-qr-code/?data="
                             + encodeURI(window.location.origin + "/mobile.html?" + args));
+        },
+        onpush: function (event) {
+            var message = {};
+            message.type = "pull";
+            message.data = {
+                "type": "markdown",
+                "data": window.player.getMarkdown(),
+                "index": window.player.getIndex()
+            };
+            window.airPlay.send(message);
+        },
+        onpull: function (event) {
+            window.player.sync(event.data);
+        },
+        onplay: function (event) {
+            window.player.play(event.data);
         }
     });
     window.airPlay.connect("ws://10.200.182.54:8001");
