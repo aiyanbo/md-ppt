@@ -53,10 +53,9 @@
                         <strong>^-^</strong>
                     </button>
                     <button class="btn btn-danger" id="air_status">Offline</button>
-                    <button class="btn btn-primary" id="btn_full_screen"
-                            onclick="window.player.fullScreen('#main')"
-                            data-toggle="tooltip" data-placement="left" title="Full screen">
-                        <span class="glyphicon glyphicon-fullscreen"></span>
+                    <button class="btn btn-primary glyphicon-tooltip" onclick="window.player.fullScreen('#main')">
+                        <span class="glyphicon glyphicon-fullscreen" id="glyphicon_full_screen"
+                              data-toggle="tooltip" data-placement="bottom" title="Full screen"></span>
                     </button>
                 </div>
             </div>
@@ -114,7 +113,7 @@
 </div>
 </body>
 <script>
-    $('#btn_full_screen').tooltip();
+    $('#glyphicon_full_screen').tooltip();
 
     window.player = new Player({
         onplay: function (event) {

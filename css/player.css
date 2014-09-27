@@ -1,3 +1,13 @@
+.glyphicon-tooltip {
+    padding: 0;
+}
+
+.glyphicon-tooltip span {
+    width: 42px;
+    height: 32px;
+    padding-top: 8px
+}
+
 #input_host {
     width: 250px;
 }
