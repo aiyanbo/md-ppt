@@ -180,19 +180,35 @@
     var zeroClipboard = new ZeroClipboard(document.querySelector("#btn_copy"));
     zeroClipboard.on("ready", function (readyEvent) {
         console.log("ZeroClipboard is on ready.");
-        var bridge = $("#global-zeroclipboard-html-bridge");
-        bridge.tooltip({"placement": "top", "trigger": "click hover"})
-                .attr('data-original-title', 'Copy to clipboard');
+        if (navigator.userAgent.match(/chrome/i)) {
+            var btnCopy = $("#btn_copy");
+            btnCopy.tooltip({"placement": "left", "trigger": "click hover"})
+                    .attr('data-original-title', 'Copy to clipboard');
 
-        bridge.on("mouseout", function (event) {
-            $("#global-zeroclipboard-html-bridge")
-                    .attr('data-original-title', 'Copy to clipboard')
-                    .tooltip('fixTitle');
-        }).on("click", function (event) {
-            $("#global-zeroclipboard-html-bridge")
-                    .attr('data-original-title', 'Copied!')
-                    .tooltip('toggle');
-        });
+            btnCopy.on("mouseout", function (event) {
+                $("#btn_copy")
+                        .attr('data-original-title', 'Copy to clipboard')
+                        .tooltip('fixTitle');
+            }).on("click", function (event) {
+                $("#btn_copy")
+                        .attr('data-original-title', 'Copied!')
+                        .tooltip('toggle');
+            });
+        } else {
+            var bridge = $("#global-zeroclipboard-html-bridge");
+            bridge.tooltip({"placement": "top", "trigger": "click hover"})
+                    .attr('data-original-title', 'Copy to clipboard');
+
+            bridge.on("mouseout", function (event) {
+                $("#global-zeroclipboard-html-bridge")
+                        .attr('data-original-title', 'Copy to clipboard')
+                        .tooltip('fixTitle');
+            }).on("click", function (event) {
+                $("#global-zeroclipboard-html-bridge")
+                        .attr('data-original-title', 'Copied!')
+                        .tooltip('toggle');
+            });
+        }
     });
 </script>
 </html>
