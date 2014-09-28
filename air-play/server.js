@@ -33,20 +33,24 @@ var server = ws.createServer(function (conn) {
     conn.nodes = [];
     conn.master = null;
     conn.on("text", function (str) {
-        console.log(str);
         var message = JSON.parse(str);
         if ("conn" === message.type) {
+            var success = false;
             for (var index in server.connections) {
                 var connection = server.connections[index];
                 if (message.data == connection.code) {
                     conn.master = connection;
                     safeAdd(connection.nodes, conn.code);
-                    conn.sendText(buildMessage("status", {"action": "conn", "code": 200}));
-                    connection.sendText(buildMessage("push", ""));
+                    success = true;
                     break;
                 }
             }
-
+            if (success) {
+                conn.sendText(buildMessage("status", {"action": "conn", "code": 200}));
+                connection.sendText(buildMessage("push", ""));
+            } else {
+                conn.sendText(buildMessage("status", {"action": "conn", "code": 404}));
+            }
         } else if ("pull" === message.type || "play" === message.type) {
             var nodes = [];
             if (conn.master != null) {
