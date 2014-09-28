@@ -1,4 +1,30 @@
 var ws = require("nodejs-websocket");
+var os = require('os');
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function buildMessage(type, object) {
+    var message = {};
+    message.type = type;
+    message.data = object;
+    return JSON.stringify(message)
+}
+
+function safeAdd(array, eles) {
+    if (typeof eles === "number") {
+        if (array.indexOf(eles) < 0) {
+            array.push(eles);
+        }
+    } else {
+        eles.forEach(function (ele) {
+            if (array.indexOf(ele) < 0) {
+                array.push(ele);
+            }
+        });
+    }
+}
 
 var server = ws.createServer(function (conn) {
     var code = getRandomInt(100000, 999999);
@@ -42,29 +68,16 @@ var server = ws.createServer(function (conn) {
     })
 }).listen(8001);
 
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function buildMessage(type, object) {
-    var message = {};
-    message.type = type;
-    message.data = object;
-    return JSON.stringify(message)
-}
-
-function safeAdd(array, eles) {
-    if (typeof eles === "number") {
-        if (array.indexOf(eles) < 0) {
-            array.push(eles);
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+    for (var k2 in interfaces[k]) {
+        var address = interfaces[k][k2];
+        if (address.family === 'IPv4' && !address.internal) {
+            addresses.push(address.address);
         }
-    } else {
-        eles.forEach(function (ele) {
-            if (array.indexOf(ele) < 0) {
-                array.push(ele);
-            }
-        });
     }
 }
 
 console.log("Server running 8001");
+console.log("Air play path: ws://" + addresses[0] + ":8001");

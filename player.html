@@ -28,24 +28,12 @@
             <a class="navbar-brand" href="/player.html">Come Soon</a>
         </div>
         <div class="navbar-collapse collapse">
-            <div class="navbar-form navbar-left" onsubmit="return false" role="search">
-                <div class="input-group">
+            <form class="navbar-form navbar-left" onsubmit="connect();return false" role="form">
+            <div class="input-group">
                     <span class="input-group-addon">Air Play</span>
                     <input id="input_host" type="url" class="form-control" autocomplete>
-                    <span class="input-group-addon btn"
-                          onclick="var ws = $('#input_host');window.airPlay.connect(ws.val());window.settings.save(ws.val())">
-                        <span class="glyphicon glyphicon-ok"></span>
-                    </span>
                 </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon">Code</span>
-                    <input id="input_code" type="number" min="100000" max="999999" class="form-control">
-                    <span class="input-group-addon btn" onclick="window.airPlay.join($('#input_code').val())">
-                        <span class="glyphicon glyphicon-ok"></span>
-                    </span>
-                </div>
-            </div>
+            </form>
 
             <div class="navbar-form navbar-right" onsubmit="return false" role="status">
                 <div class="btn-group">
@@ -115,6 +103,15 @@
 <script>
     $('#glyphicon_full_screen').tooltip();
 
+    var connect = function () {
+        var url = $("#input_host").val();
+        if (window.airPlay.url() == url && window.airPlay.isOnline()) {
+            return;
+        }
+        window.airPlay.connect(url);
+        window.settings.save(url);
+    };
+
     window.player = new Player({
         onplay: function (event) {
             window.airPlay.send({"type": "play", "data": event.data});
@@ -165,8 +162,6 @@
         onok: function (ws, code) {
             window.airPlay.connect(ws, code);
             $("#input_host").val(ws);
-            $("#input_code").val(code);
-
         },
         onws: function (ws) {
             window.airPlay.connect(ws);

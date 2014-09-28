@@ -49,6 +49,14 @@ function AirPlay(options) {
         webSocket.send(JSON.stringify(message));
     };
 
+    this.isOnline = function () {
+        return onlineCode != null;
+    };
+
+    this.url = function () {
+        return __url__;
+    };
+
     var controller = function (event) {
         switch (event.type) {
             case "new":
