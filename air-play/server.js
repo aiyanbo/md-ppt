@@ -64,7 +64,8 @@ var server = ws.createServer(function (conn) {
         console.log("Connection closed")
     });
     conn.on("error", function (error) {
-        console.log(error)
+        console.log("Connection has error, it will be closed. The reason maybe browser has refresh, details:");
+        console.error(error);
     })
 }).listen(8001);
 
