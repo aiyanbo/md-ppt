@@ -57,6 +57,10 @@ function AirPlay(options) {
         return __url__;
     };
 
+    this.code = function () {
+        return onlineCode;
+    };
+
     var controller = function (event) {
         switch (event.type) {
             case "new":

@@ -21,6 +21,7 @@ function Player(options) {
     var markdown = "";
     var pages = [];
     var __index__ = -1;
+    var __readOnly__ = false;
     var onplay = options.onplay;
     var onreadend = options.onreadend;
     var parser = new stmd.DocParser();
@@ -70,6 +71,10 @@ function Player(options) {
 
     this.getIndex = function () {
         return __index__;
+    };
+
+    this.readOnly = function () {
+        __readOnly__ = true;
     };
 
     var __play__ = function (index) {
@@ -128,6 +133,9 @@ function Player(options) {
     };
 
     var handleKeyUp = function (event) {
+        if (__readOnly__) {
+            return;
+        }
         var keyCode = (typeof event.which === "number") ? event.which : event.keyCode;
         if (27 == keyCode) {
             //esc
@@ -139,10 +147,14 @@ function Player(options) {
     };
 
     var handleSwipeLeft = function () {
-        swipePlay(true);
+        if (!__readOnly__) {
+            swipePlay(true);
+        }
     };
     var handleSwipeRight = function () {
-        swipePlay(false);
+        if (!__readOnly__) {
+            swipePlay(false);
+        }
     };
 
     player.addEventListener('dragover', handleDragOver, false);

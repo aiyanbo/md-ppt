@@ -5,11 +5,19 @@
 function Settings(options) {
     var onok = options.onok;
     var onws = options.onws;
+    var onreadonly = options.onreadonly;
 
     this.set = function () {
         var parameter = getSearchParameters();
         if (parameter.ws && parameter.code) {
+            if (!(parameter.ctrl && parameter.ctrl == 1)) {
+                onreadonly();
+            }
             onok(parameter.ws, parameter.code);
+            return;
+        }
+        if (parameter.ws) {
+            onws(parameter.ws);
             return;
         }
         var ws = localStorage.getItem("ws");

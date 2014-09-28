@@ -31,7 +31,7 @@
         <div class="navbar-collapse collapse">
             <form class="navbar-form navbar-left" onsubmit="connect();return false" role="form">
                 <div class="input-group">
-                <span class="input-group-addon">Air Play</span>
+                    <span class="input-group-addon">Air Play</span>
                     <input id="input_host" type="url" class="form-control" autocomplete>
                 </div>
             </form>
@@ -77,8 +77,9 @@
                 <label>Read only</label>
 
                 <div class="onoffswitch navbar-right">
-                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-                    <label class="onoffswitch-label" for="myonoffswitch">
+                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="switch_readonly"
+                           onchange="changeShareModel()" checked>
+                    <label class="onoffswitch-label" for="switch_readonly">
                         <span class="onoffswitch-inner">
                             <span class="onoffswitch-active"><span class="onoffswitch-switch">ON</span></span>
                             <span class="onoffswitch-inactive"><span class="onoffswitch-switch">OFF</span></span>
@@ -125,6 +126,29 @@
         window.settings.save(url);
     };
 
+    var setShareModel = function (options) {
+        var args = "code=" + options.code + "&ws=" + options.url;
+        if (options.readOnly) {
+            args = args + "&ro=1";
+        } else {
+            args = args + "&ctrl=1";
+        }
+        var share = window.location.origin + "/player.html?" + args;
+        $("#input_share").val(share);
+        $("#btn_copy").attr("data-clipboard-text", share);
+        $("#img_qrcode").attr("src",
+                        "http://api.qrserver.com/v1/create-qr-code/?data="
+                        + encodeURIComponent(window.location.origin + "/mobile.html?" + args));
+    };
+
+    var changeShareModel = function () {
+        setShareModel({
+            "code": window.airPlay.code(),
+            "url": window.airPlay.url(),
+            readOnly: document.querySelector("#switch_readonly").checked
+        });
+    };
+
     window.player = new Player({
         onplay: function (event) {
             window.airPlay.send({"type": "play", "data": event.data});
@@ -144,14 +168,12 @@
 
     window.airPlay = new AirPlay({
         onopen: function (event) {
-            var args = "code=" + event.data + "&ws=" + event.url;
-            var share = window.location.origin + "/player.html?" + args;
-            $("#input_share").val(share);
             $("#input_host").val(event.url);
-            $("#btn_copy").attr("data-clipboard-text", share);
-            $("#img_qrcode").attr("src",
-                            "http://api.qrserver.com/v1/create-qr-code/?data="
-                            + encodeURIComponent(window.location.origin + "/mobile.html?" + args));
+            setShareModel({
+                "code": event.data,
+                "url": event.url,
+                readOnly: true
+            });
         },
         onpush: function (event) {
             var message = {};
@@ -172,6 +194,9 @@
     });
 
     window.settings = new Settings({
+        onreadonly: function () {
+            window.player.readOnly();
+        },
         onok: function (ws, code) {
             window.airPlay.connect(ws, code);
             $("#input_host").val(ws);
