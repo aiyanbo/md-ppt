@@ -5,6 +5,7 @@
     <title>Markdown PPT Player</title>
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/swtich.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="js/jquery.mobile.custom.min.js"></script>
     <script src="http://jgm.github.io/stmd/js/stmd.js"></script>
@@ -29,8 +30,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <form class="navbar-form navbar-left" onsubmit="connect();return false" role="form">
-            <div class="input-group">
-                    <span class="input-group-addon">Air Play</span>
+                <div class="input-group">
+                <span class="input-group-addon">Air Play</span>
                     <input id="input_host" type="url" class="form-control" autocomplete>
                 </div>
             </form>
@@ -73,6 +74,18 @@
                 <h4 class="modal-title" id="qrcode_modal_label">Share</h4>
             </div>
             <div class="modal-body">
+                <label>Read only</label>
+
+                <div class="onoffswitch navbar-right">
+                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+                    <label class="onoffswitch-label" for="myonoffswitch">
+                        <span class="onoffswitch-inner">
+                            <span class="onoffswitch-active"><span class="onoffswitch-switch">ON</span></span>
+                            <span class="onoffswitch-inactive"><span class="onoffswitch-switch">OFF</span></span>
+                        </span>
+                    </label>
+                </div>
+                <div style="clear: both"></div>
                 <div class="input-group">
                     <input id="input_share" class="form-control" readonly type="url"
                            value="https://github.com/aiyanbo/md-ppt">
