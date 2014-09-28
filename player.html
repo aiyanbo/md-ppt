@@ -38,8 +38,8 @@
 
             <div class="navbar-form navbar-right" onsubmit="return false" role="status">
                 <div class="btn-group">
-                    <button class="btn btn-info" id="air_code" onclick="$('#qrcode_modal').modal()">
-                        <strong>^-^</strong>
+                    <button class="btn btn-info" id="air_code" onclick="openShareDialog()">
+                    <strong>^-^</strong>
                     </button>
                     <button class="btn btn-danger" id="air_status">Offline</button>
                     <button class="btn btn-primary glyphicon-tooltip" onclick="window.player.fullScreen('#main')">
@@ -116,6 +116,19 @@
 </body>
 <script>
     $('#glyphicon_full_screen').tooltip();
+
+    var openShareDialog = function () {
+        var readOnlySwitch = document.querySelector('#switch_readonly');
+        if (!readOnlySwitch.checked) {
+            readOnlySwitch.checked = true;
+            setShareModel({
+                "code": window.airPlay.code(),
+                "url": window.airPlay.url(),
+                readOnly: true
+            });
+        }
+        $('#qrcode_modal').modal();
+    };
 
     var connect = function () {
         var url = $("#input_host").val();
