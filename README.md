@@ -45,12 +45,18 @@ npm install
 node server.js
 ```
 
-- 在打开的页面中设置服务端信息，默认为：`localhost:8001`。
+- 打开程序 http://aiyanbo.github.io/md-ppt/player.html
+- 在 Air Play 文本输入框中输入服务器地址。例如：`ws://localhost:8001`
+- 连接成功后，点击 Pin Code 按钮(有6位数字)。
+- 分享连接给其他屏幕，也可以使用移动端扫描二维码。
 
 > **Notes**
-> 主控制器(一般是您的移动设备)请最后添加到多屏组里。
+> 主控制器(一般是您的移动设备)请将 Read only 选项关闭。
 
 ## 使用的组件
 
+- jQuery
+- jQuery mobile
+- ZeroClipboard
 - CommonMark http://commonmark.org/
 - Bootstrap http://getbootstrap.com/
