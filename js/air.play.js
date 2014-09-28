@@ -23,7 +23,7 @@ function AirPlay(options) {
         webSocket.onopen = function (event) {
             __url__ = url;
             if (code) {
-                __this__.send({"type": "conn", "data": code});
+                __this__.send(messaging("conn", code));
             }
         };
 
@@ -41,7 +41,7 @@ function AirPlay(options) {
     };
 
     this.join = function (code) {
-        this.send({"type": "conn", "data": code});
+        this.send(messaging("conn", code));
     };
 
     this.send = function (message) {
