@@ -15,11 +15,19 @@
 </head>
 <body>
 
-<div class="btn-group">
-    <button class="btn btn-info" id="air_code">
-        <strong>^-^</strong>
-    </button>
-    <button class="btn btn-danger" id="air_status">Offline</button>
+<div id="header">
+    <div id="refresh">
+        <span class="btn" onclick="refresh()">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </span>
+    </div>
+    <div id="status" class="btn-group">
+        <button class="btn btn-info" id="air_code">
+            <strong>^-^</strong>
+        </button>
+        <button class="btn btn-danger" id="air_status">Offline</button>
+    </div>
+    <div style="clear: both"></div>
 </div>
 
 <div id="player">
@@ -45,6 +53,13 @@
 <!--window.player.setMarkdown("Scala & Akka \n ========= \n **Andy Ai** \n ********** \n ## Thank you");-->
 <!--</script>-->
 <script>
+    var refresh = function () {
+        if (window.airPlay.isOnline()) {
+            return;
+        }
+        window.settings.set();
+    };
+
     window.player = new Player({
         onplay: function (event) {
             window.airPlay.send({"type": "play", "data": event.data});
@@ -84,9 +99,14 @@
         }
     });
 
-    window.settings = new Settings({onok: function (ws, code) {
-        window.airPlay.connect(ws, code);
-    }});
+    window.settings = new Settings({
+        onok: function (ws, code) {
+            window.airPlay.connect(ws, code);
+        },
+        onws: function (ws) {
+            console.log("Ignore the event in mobile.");
+        }
+    });
 
     window.settings.set();
 </script>

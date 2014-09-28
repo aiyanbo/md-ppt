@@ -1,8 +1,21 @@
-#player {
-    /*margin-top: 10px;*/
-    /*border: solid 1px;*/
+#header {
+    padding: 5px;
+    border-bottom: solid 1px #e7e7e7;
 }
 
-#drop_zone{
+#refresh {
+    float: left;
+}
+
+#status {
+    float: right;
+    position: relative;
+}
+
+#player {
+    padding-left: 5px;
+}
+
+#drop_zone {
     display: none;
 }
