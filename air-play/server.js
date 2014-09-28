@@ -31,6 +31,7 @@ var server = ws.createServer(function (conn) {
     conn.sendText(buildMessage("new", code));
     conn.code = code;
     conn.nodes = [];
+    conn.master = null;
     conn.on("text", function (str) {
         console.log(str);
         var message = JSON.parse(str);
@@ -38,19 +39,24 @@ var server = ws.createServer(function (conn) {
             for (var index in server.connections) {
                 var connection = server.connections[index];
                 if (message.data == connection.code) {
-                    safeAdd(connection.nodes, code);
-                    safeAdd(conn.nodes, connection.code);
-                    safeAdd(conn.nodes, connection.nodes);
-                    // remove self
-                    conn.nodes.splice(conn.nodes.indexOf(code), 1);
+                    conn.master = connection;
+                    safeAdd(connection.nodes, conn.code);
                     conn.sendText(buildMessage("status", {"action": "conn", "code": 200}));
                     connection.sendText(buildMessage("push", ""));
                     break;
                 }
             }
+
         } else if ("pull" === message.type || "play" === message.type) {
-            console.log("conn code: " + conn.code + ", nodes: " + conn.nodes);
-            var nodes = conn.nodes;
+            var nodes = [];
+            if (conn.master != null) {
+                safeAdd(nodes, conn.master.code);
+                safeAdd(nodes, conn.master.nodes);
+                nodes.splice(nodes.indexOf(conn.code), 1);
+            } else {
+                safeAdd(nodes, conn.nodes);
+            }
+            console.log("conn code: " + conn.code + ", nodes: " + nodes);
             server.connections.forEach(function (connection) {
                 for (var index in nodes) {
                     if (nodes[index] == connection.code) {
