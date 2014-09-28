@@ -96,6 +96,9 @@
     });
 
     window.settings = new Settings({
+        onreadonly: function () {
+            window.player.readOnly();
+        },
         onok: function (ws, code) {
             window.airPlay.connect(ws, code);
         },
