@@ -71,9 +71,11 @@ var server = ws.createServer(function (conn) {
         }
     });
     conn.on("close", function (code, reason) {
-        console.log("Connection closed")
+        // need remote node's master ?
+        console.log("Connection closed");
     });
     conn.on("error", function (error) {
+        // need remote node's master ?
         console.log("Connection has error, it will be closed. The reason maybe browser has refresh, details:");
         console.error(error);
     })
