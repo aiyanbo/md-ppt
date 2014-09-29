@@ -30,6 +30,10 @@ function Settings(options) {
         localStorage.setItem("ws", ws);
     };
 
+    this.code = function () {
+        return getSearchParameters().code;
+    };
+
     var getSearchParameters = function () {
         var prmstr = window.location.search.substr(1);
         return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};

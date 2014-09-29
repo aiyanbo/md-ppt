@@ -39,7 +39,7 @@
             <div class="navbar-form navbar-right" onsubmit="return false" role="status">
                 <div class="btn-group">
                     <button class="btn btn-info" id="air_code" onclick="openShareDialog()">
-                    <strong>^-^</strong>
+                        <strong>^-^</strong>
                     </button>
                     <button class="btn btn-danger" id="air_status">Offline</button>
                     <button class="btn btn-primary glyphicon-tooltip" onclick="window.player.fullScreen('#main')">
@@ -59,6 +59,7 @@
                 <div id="drop_zone_header">
                     Drop markdown file
                 </div>
+                <div id="drop_zone_content"></div>
             </div>
             <div id="play_zone"></div>
         </div>
@@ -189,6 +190,9 @@
             });
         },
         onpush: function (event) {
+            if (window.player.getMarkdown().length == 0) {
+                return;
+            }
             var message = {};
             message.type = "pull";
             message.data = {
@@ -203,6 +207,19 @@
         },
         onplay: function (event) {
             window.player.play(event.data);
+        },
+        onstatus: function (event) {
+            var message = event.data;
+            if ("conn" === message.action) {
+                if (200 == message.code) {
+                    window.player.display({title: "Waiting for sync.", content: ""});
+                } else if (404 == message.code) {
+                    window.player.display({
+                        title: "Connect failure!",
+                        content: "Can't connect to " + window.settings.code() + ", it's maybe closed."
+                    });
+                }
+            }
         }
     });
 

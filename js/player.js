@@ -77,6 +77,11 @@ function Player(options) {
         __readOnly__ = true;
     };
 
+    this.display = function (message) {
+        dropZone.querySelector("#drop_zone_header").innerHTML = message.title;
+        dropZone.querySelector("#drop_zone_content").innerHTML = message.content;
+    };
+
     var __play__ = function (index) {
         dropZone.style.display = "none";
         if (pages.length == 0 || __index__ === index) {

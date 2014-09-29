@@ -7,6 +7,7 @@ function AirPlay(options) {
     var onplay = options.onplay;
     var onpush = options.onpush;
     var onpull = options.onpull;
+    var onstatus = options.onstatus;
 
     var onlineCode = null;
     var airCode = document.querySelector("#air_code");
@@ -76,6 +77,9 @@ function AirPlay(options) {
                 break;
             case "pull":
                 onpull(event);
+                break;
+            case "status":
+                onstatus(event);
                 break;
             default :
                 console.log(event);
