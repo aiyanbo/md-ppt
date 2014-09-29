@@ -78,6 +78,9 @@ function Player(options) {
     };
 
     this.display = function (message) {
+        if ("none" == dropZone.style.display) {
+            dropZone.style.display = "block";
+        }
         dropZone.querySelector("#drop_zone_header").innerHTML = message.title;
         dropZone.querySelector("#drop_zone_content").innerHTML = message.content;
     };
