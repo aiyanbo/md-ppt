@@ -31,10 +31,9 @@
 </div>
 
 <div id="player">
-    <div id="drop_zone">
-        <div id="drop_zone_header">
-            Waiting connect...
-        </div>
+    <div id="drop_zone" class="text-center">
+        <div id="drop_zone_header"></div>
+        <div id="drop_zone_content"></div>
     </div>
     <div id="play_zone"></div>
 </div>
@@ -78,20 +77,27 @@
             console.log(event);
         },
         onpush: function (event) {
-            var message = {};
-            message.type = "pull";
-            message.data = {
-                "type": "markdown",
-                "data": window.player.getMarkdown(),
-                "index": window.player.getIndex()
-            };
-            window.airPlay.send(message);
+            console.log("Mobile is ignore the push event.");
         },
         onpull: function (event) {
             window.player.sync(event.data);
         },
         onplay: function (event) {
             window.player.play(event.data);
+        },
+        onstatus: function (event) {
+            var message = event.data;
+            console.log(message);
+            if ("conn" === message.action) {
+                if (200 == message.code) {
+                    window.player.display({title: "Waiting for sync.", content: ""});
+                } else if (404 == message.code) {
+                    window.player.display({
+                        title: "Connect failure!",
+                        content: "Can't connect to " + window.settings.code() + ", it's maybe closed."
+                    });
+                }
+            }
         }
     });
 
@@ -103,7 +109,7 @@
             window.airPlay.connect(ws, code);
         },
         onws: function (ws) {
-            console.log("Ignore the event in mobile.");
+            console.log("Mobile is ignore onws event.");
         }
     });
 

@@ -17,5 +17,11 @@
 }
 
 #drop_zone {
-    display: none;
+    width: 100%;
+    height: 100%;
+    color: gray;
+}
+
+#drop_zone_header {
+    font-size: 7.5em;
 }
