@@ -27,6 +27,15 @@ https://github.com/aiyanbo/md-ppt/blob/master/sample/sample.md
 2. 打开播放器程序 http://aiyanbo.github.io/md-ppt/player.html
 3. 将 markdown 文件拖入 "Drop markdown file" 框中
 
+### Air-Play 功能使用
+
+1. 启动 Air-Play 服务 (操作方式参考 https://github.com/aiyanbo/md-ppt#多屏互动)
+2. 在程序界面上的 Air Play 文本看输入服务地址
+3. 输入完成后按 回车 键连接
+4. 连接成功之后，点击 Pin Code 按钮(6位数字)
+5. 将分享连接复制给其他子屏幕
+6. 移动设备可以使用 微信 微博 QQ 等工具扫墓二维码
+
 ## 操作
 
 ### PC 端
