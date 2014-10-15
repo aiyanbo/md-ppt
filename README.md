@@ -21,6 +21,12 @@ OR
 
 https://github.com/aiyanbo/md-ppt/blob/master/sample/sample.md
 
+## 开始使用
+
+1. 按照标准格式书写 markdown 文件
+2. 打开播放器程序 http://aiyanbo.github.io/md-ppt/player.html
+3. 将 markdown 文件拖入 "Drop markdown file" 框中
+
 ## 操作
 
 ### PC 端
