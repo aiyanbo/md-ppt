@@ -14,8 +14,8 @@ function Player(options) {
     }
 
     // check stmd
-    if (typeof stmd === "undefined") {
-        console.error("Standard markdown can't found.")
+    if (typeof commonmark === "undefined") {
+        console.error("Common mark can't found.")
     }
 
     var markdown = "";
@@ -24,8 +24,8 @@ function Player(options) {
     var __readOnly__ = false;
     var onplay = options.onplay;
     var onreadend = options.onreadend;
-    var parser = new stmd.DocParser();
-    var renderer = new stmd.HtmlRenderer();
+    var writer = new commonmark.HtmlRenderer();
+    var reader = new commonmark.DocParser();
     var player = document.querySelector("#player");
     var dropZone = document.querySelector("#drop_zone");
     var playZone = document.querySelector("#play_zone");
@@ -113,7 +113,7 @@ function Player(options) {
     };
 
     var parseMarkdown = function (markdown) {
-        pages = renderer.render(parser.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
+        pages = writer.renderBlock(reader.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
     };
 
     var handleDragOver = function (event) {
