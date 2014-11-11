@@ -128,7 +128,7 @@ function Player(options) {
 
         var files = event.dataTransfer.files;
         var reader = new FileReader();
-        reader.readAsBinaryString(files[0]);
+        reader.readAsText(files[0],"utf-8");
 
         reader.onloadend = function (event) {
             if (event.target.readyState == FileReader.DONE) {
