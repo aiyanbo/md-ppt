@@ -118,6 +118,21 @@
 <script>
     $('#glyphicon_full_screen').tooltip();
 
+    var logError = function(ex) {
+        console.error(ex.message);
+    }
+
+    var runSafely = function(func) {
+        try
+        {
+            func();
+        }
+        catch (ex)
+        {
+            logError(ex);
+        }
+    }
+
     var openShareDialog = function () {
         var readOnlySwitch = document.querySelector('#switch_readonly');
         if (!readOnlySwitch.checked) {
@@ -166,7 +181,7 @@
 
     window.player = new Player({
         onplay: function (event) {
-            window.airPlay.send({"type": "play", "data": event.data});
+            runSafely(function(){window.airPlay.send({"type": "play", "data": event.data});});
         },
         onreadend: function (event) {
             var message = {};
@@ -176,7 +191,7 @@
                 "data": window.player.getMarkdown(),
                 "index": window.player.getIndex()
             };
-            window.airPlay.send(message);
+            runSafely(function(){window.airPlay.send(message);});
         }
     });
     window.player.setSwipeEvent("#main");
@@ -229,11 +244,11 @@
             window.player.readOnly();
         },
         onok: function (ws, code) {
-            window.airPlay.connect(ws, code);
+            runSafely(function(){window.airPlay.connect(ws, code);});
             $("#input_host").val(ws);
         },
         onws: function (ws) {
-            window.airPlay.connect(ws);
+            runSafely(function(){window.airPlay.connect(ws);});
             $("#input_host").val(ws);
         }
     });

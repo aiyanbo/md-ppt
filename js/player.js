@@ -25,7 +25,7 @@ function Player(options) {
     var onplay = options.onplay;
     var onreadend = options.onreadend;
     var writer = new commonmark.HtmlRenderer();
-    var reader = new commonmark.DocParser();
+    var reader = new commonmark.Parser();
     var player = document.querySelector("#player");
     var dropZone = document.querySelector("#drop_zone");
     var playZone = document.querySelector("#play_zone");
@@ -113,7 +113,7 @@ function Player(options) {
     };
 
     var parseMarkdown = function (markdown) {
-        pages = writer.renderBlock(reader.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
+        pages = writer.render(reader.parse(markdown)).split(/<\s*hr\s*\/*\s*>/);
     };
 
     var handleDragOver = function (event) {
